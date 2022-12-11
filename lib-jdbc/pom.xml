@@ -1,0 +1,235 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+	<parent>
+	  <groupId>cn.fomer</groupId>
+	  <artifactId>fomer-parent</artifactId>	
+	  <version>1.0.0-SNAPSHOT</version>
+	</parent>
+	
+  <artifactId>fomer-jdbc</artifactId>
+  <packaging>jar</packaging>
+
+  <name>lib</name>
+  <url>http://maven.apache.org</url>
+
+
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+	<!--
+	<dependency>
+		<groupId>jdk.tools</groupId>
+		<artifactId>jdk.tools</artifactId>
+		<version>1.8</version>
+		<scope>system</scope>
+		<systemPath>${JAVA_HOME}/lib/tools.jar</systemPath>
+	</dependency>
+    -->
+	<dependencies>
+
+	<!-- https://mvnrepository.com/artifact/c3p0/c3p0 -->
+	<dependency>
+	    <groupId>c3p0</groupId>
+	    <artifactId>c3p0</artifactId>
+	    <version>0.9.1.2</version>
+	    <scope>provided</scope>
+	</dependency>
+
+<!-- https://mvnrepository.com/artifact/com.oracle/ojdbc -->
+
+
+
+	<!-- https://mvnrepository.com/artifact/org.springframework/spring-tx -->
+	<dependency>
+	    <groupId>org.springframework</groupId>
+	    <artifactId>spring-tx</artifactId>
+	    <version>4.1.9.RELEASE</version>
+	    <scope>provided</scope>
+	</dependency>
+
+	<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-c3p0 -->
+	<dependency>
+	    <groupId>org.hibernate</groupId>
+	    <artifactId>hibernate-c3p0</artifactId>
+	    <version>4.3.11.Final</version>
+	    <scope>provided</scope>
+	</dependency>
+
+
+	<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+	<dependency>
+	    <groupId>com.fasterxml.jackson.core</groupId>
+	    <artifactId>jackson-databind</artifactId>
+	    <version>2.8.11.6</version>
+	    <scope>provided</scope>
+	</dependency>
+
+
+
+	<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+	<dependency>
+		<groupId>com.google.code.gson</groupId>
+		<artifactId>gson</artifactId>
+		<version>2.6.2</version>
+		<scope>provided</scope>
+	</dependency>
+
+
+
+	<!-- ftp -->
+	<!-- https://mvnrepository.com/artifact/commons-net/commons-net -->
+	<dependency>
+	    <groupId>commons-net</groupId>
+	    <artifactId>commons-net</artifactId>
+	    <version>3.6</version>
+	    <scope>provided</scope>
+	</dependency>
+
+
+
+
+	<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
+	<dependency>
+	    <groupId>org.jsoup</groupId>
+	    <artifactId>jsoup</artifactId>
+	    <version>1.10.3</version>
+	    <scope>provided</scope>
+	</dependency>
+
+
+	<!-- @CrossOrigin -->
+	<!--  -->
+	<dependency>
+	    <groupId>org.springframework.boot</groupId>
+	    <artifactId>spring-boot-starter-web</artifactId>
+	    <version>1.5.11.RELEASE</version>
+	    <scope>provided</scope>
+	</dependency>
+
+
+  <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+	<!-- -->
+<!-- 	<dependency> -->
+<!-- 	    <groupId>mysql</groupId> -->
+<!-- 	    <artifactId>mysql-connector-java</artifactId> -->
+<!-- 	    <version>5.1.47</version> -->
+<!-- 	    <scope>provided</scope> -->
+<!-- 	</dependency> -->
+
+<dependency>
+  <groupId>mysql</groupId>
+  <artifactId>mysql-connector-java</artifactId>
+  <version>8.0.30</version>
+</dependency>
+
+	<!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+	<dependency>
+		<groupId>com.alibaba</groupId>
+		<artifactId>fastjson</artifactId>
+		<version>1.2.54</version>
+		<scope>provided</scope>
+	</dependency>
+
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+
+    </dependency>
+
+	<dependency>
+		<groupId>org.postgresql</groupId>
+		<artifactId>postgresql</artifactId>
+		<version>9.4.1212.jre7</version>
+		<scope>provided</scope>
+	</dependency>
+
+	<!--
+	<dependency>
+	    <groupId>org.apache.hive</groupId>
+	    <artifactId>hive-service</artifactId>
+	    <version>1.1.0</version>
+	</dependency>
+	-->
+	<dependency>
+		<groupId>org.apache.hadoop</groupId>
+		<artifactId>hadoop-client</artifactId>
+		<version>2.7.7</version>
+	</dependency>
+
+	<dependency>
+		<groupId>cn.fomer</groupId>
+		<artifactId>fomer-common</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</dependency>
+
+	<dependency>
+	    <groupId>org.apache.hive</groupId>
+	    <artifactId>hive-jdbc</artifactId>
+	    <version>1.2.2</version>
+	</dependency>
+
+
+		<dependency>
+		    <groupId>org.projectlombok</groupId>
+		    <artifactId>lombok</artifactId>
+		    <version>1.16.22</version>
+		    <scope>provided</scope>
+		</dependency>
+
+		<dependency>
+		    <groupId>com.oracle.ojdbc</groupId>
+		    <artifactId>ojdbc8</artifactId>
+		    <version>19.3.0.0</version>
+		    <scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+		    <groupId>com.oracle.database.nls</groupId>
+		    <artifactId>orai18n</artifactId>
+		    <version>19.7.0.0</version>
+		</dependency>		
+<!--
+<dependency>
+  <groupId>org.apache.hadoop</groupId>
+  <artifactId>hadoop-common</artifactId>
+  <version>2.6.5</version>
+</dependency>
+-->
+
+		<dependency>
+			<groupId>org.xerial</groupId>
+			<artifactId>sqlite-jdbc</artifactId>
+			<version>3.7.2</version>
+		</dependency>
+
+        <!--人大金仓kingbase
+        <dependency>
+            <groupId>com.kingbase8</groupId>
+            <artifactId>kingbase8</artifactId>
+            <version>8.6.0</version>
+        </dependency>
+        -->
+
+  </dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>    
+</project>

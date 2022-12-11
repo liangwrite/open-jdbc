@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root id="root">
+	<select id="table_list">
+	   SELECT table_name FROM information_schema.`TABLES` where table_schema='DB_NAME'
+	</select>
+	<select id="field_list">
+	   SELECT column_name,data_type,IS_NULLABLE,COLUMN_KEY, COLUMN_COMMENT FROM information_schema.columns 
+	   WHERE 
+	       table_schema = 'DB_NAME' and table_name='TABLE_NAME' 
+	   order by ordinal_position
+	</select>
+	
+	<!-- 查询主键 -->
+	<select id="selectId">
+		select  col.column_name from user_constraints con,user_cons_columns col
+		where con.constraint_name=col.constraint_name and con.constraint_type='P'
+		and col.table_name='TABLE_NAME'
+	</select>
+	
+	<select id="table_comment">
+		select * from user_tab_comments where table_name = 'TABLE_NAME'
+	</select>
+	
+</root>

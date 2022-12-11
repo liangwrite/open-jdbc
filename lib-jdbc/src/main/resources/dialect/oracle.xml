@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root id="root">
+	<select id="table_list">
+		select table_name from user_tables order by table_name
+	</select>
+	<select id="field_list">
+		select columnTable.COLUMN_ID id,columnTable.COLUMN_NAME name,columnTable.DATA_TYPE type,columnTable.DATA_LENGTH numlength,
+		    columnTable.DATA_PRECISION precison,columnTable.NULLABLE nullable,columnTable.CHAR_LENGTH charlength,
+		    columnTable.DATA_DEFAULT defaultVal,commentTable.comments
+		from user_tab_columns columnTable
+		left join user_col_comments commentTable on commentTable.table_name=columnTable.table_name and commentTable.column_name=columnTable.column_name
+		where columnTable.table_name = upper('TABLE_NAME') 
+		order by columnTable.column_id
+	
+	</select>
+	
+	<!-- 查询主键 -->
+	<select id="selectId">
+		select  col.column_name from user_constraints con,user_cons_columns col
+		where con.constraint_name=col.constraint_name and con.constraint_type='P'
+		and col.table_name='TABLE_NAME'
+	</select>
+	
+	<select id="table_comment">
+		select comments from user_tab_comments where table_name = 'TABLE_NAME'
+	</select>
+	
+</root>

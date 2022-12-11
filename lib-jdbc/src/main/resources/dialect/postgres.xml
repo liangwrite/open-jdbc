@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root id="root">
+	<select id="table_list">
+	   SELECT tablename as name FROM pg_tables where schemaname = 'SCHEMA_NAME'
+	</select>
+	<select id="field_list">
+		select * from information_schema.columns where table_schema='DB_NAME' and lower(table_name)=lower('TABLE_NAME');
+	</select>
+	
+	<!-- 查询主键 -->
+	<select id="selectId">
+		select  col.column_name from user_constraints con,user_cons_columns col
+		where con.constraint_name=col.constraint_name and con.constraint_type='P'
+		and col.table_name='TABLE_NAME'
+	</select>
+	
+	<select id="table_comment">
+		select description from pg_description 
+		where 
+		    objsubid=0
+		    and 
+		    objoid=(
+		        select relfilenode from pg_class 
+		        where 
+		        relowner=(select nspowner from pg_namespace where nspname='DB_NAME')
+		        and
+		        relname='TABLE_NAME' 
+		    )    
+		
+	</select>
+	
+	<select id="field_comment">
+		select v2.column_name, v1.description from (
+		    select objsubid, description from pg_description 
+		    where 
+		    objoid=(
+		    select relfilenode from pg_class 
+		    where 
+		    relowner=(select nspowner from pg_namespace where nspname='DB_NAME')
+		    and
+		    relname='TABLE_NAME' 
+		    )    
+		) v1,
+		(
+		    select column_name,ordinal_position from information_schema.columns where table_schema='DB_NAME' and table_name='TABLE_NAME'
+		) v2
+		where v1.objsubid=v2.ordinal_position		
+	</select>
+	
+</root>

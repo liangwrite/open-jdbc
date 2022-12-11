@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root id="root">
+	<select id="CLASS">
+package com.xx;
+
+
+import java.io.Serializable;
+import java.util.Date;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+/**
+ * {tablecomment}
+ *
+ * @author {author}
+ * @email
+ * @date {date}
+ */
+@Data
+@TableName("{tablename}")
+public class {classname} implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
+{fieldList}
+
+}
+	</select>
+	
+	<select id="ID">
+    /**
+     * {comments}
+     */		
+    @ApiModelProperty(value="{comments}")
+    @TableField("{field}")
+    @TableId(type= IdType.UUID)
+    private {class} {camel};	
+	</select>
+	
+	<select id="FIELD">
+    /**
+     * {comments}
+     */	
+    @ApiModelProperty(value = "{comments}")
+    @TableField("{field}")
+    private {class} {camel};
+	</select>
+	
+	<select id="DATE_FIELD">
+    /**
+     * {comments}
+     */	
+    @ApiModelProperty(value = "{comments}")
+    @TableField("{field}")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private {class} {camel};
+	</select>
+	
+</root>

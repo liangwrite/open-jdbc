@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root id="root">
+	<!-- 202201 -->
+	<select id="table_list">
+		select * from information_schema.columns WHERE table_schema ='DB_NAME' and table_name='TABLE_NAME'
+	</select>	
+	
+	<select id="table_comment">
+		select relname, cast(obj_description(relfilenode,'pg_class') as varchar) from pg_class where relname='TABLE_NAME'
+	</select>
+	
+	<select id="field_list">
+		select * from information_schema.columns WHERE table_schema ='DB_NAME' and table_name='TABLE_NAME'
+	</select>
+	
+	<select id="field_comment">
+		select c.*, v.description from information_schema.columns c
+			left join (select * from pg_description where objoid=(select oid from pg_class where relname='TABLE_NAME')) v on v.objsubid=c.ordinal_position
+		WHERE c.table_schema ='mes_business' and c.table_name='TABLE_NAME'		
+	</select>
+	
+	
+</root>

@@ -1,0 +1,11 @@
+Serializable test()
+{
+	@Getter
+	class Paire implements Serializable{
+		String table;
+		Integer count;
+	}
+	Paire p= new Paire();
+	
+	return p;
+}
