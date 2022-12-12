@@ -61,4 +61,10 @@ public class KingbaseTableImpl extends TableServiceImpl implements KingbaseTable
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public int getPageCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

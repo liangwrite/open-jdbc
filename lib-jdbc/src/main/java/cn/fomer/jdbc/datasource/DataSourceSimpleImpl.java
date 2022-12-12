@@ -196,6 +196,21 @@ public class DataSourceSimpleImpl extends DataSourceSimple
 	/**
 	 * 202104
 	 */
+	public static DataSourceSimple newInstanceOracle(String username, String password, String ip, String dbName, int port)
+	{
+		//jdbc:oracle:thin:@127.0.0.1:1521:dbName
+		String url= getUrl(DbTypeEnum.Oracle)
+				.replace("127.0.0.1", ip)
+				.replace("1521", Integer.toString(port))
+				.replace("dbName", dbName)
+				;
+		DataSourceSimpleImpl dataSource = new DataSourceSimpleImpl(username, password, url, dbName);
+		return dataSource;
+	}
+	
+	/**
+	 * 202104
+	 */
 	public static DataSourceSimple newInstanceKingbase(String username, String password, String ip, String dbName)
 	{
 		//jdbc:oracle:thin:@127.0.0.1:1521:dbName

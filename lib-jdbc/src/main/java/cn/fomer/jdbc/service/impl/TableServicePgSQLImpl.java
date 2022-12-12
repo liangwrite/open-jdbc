@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 import cn.fomer.jdbc.api.DataBaseService;
 import cn.fomer.jdbc.api.FieldService;
 import cn.fomer.jdbc.api.PostgresTable;
@@ -76,9 +78,12 @@ public class TableServicePgSQLImpl extends TableServiceImpl implements PostgresT
 	@Override
 	public void updateComment(String comment) {
 		// TODO Auto-generated method stub
-		final String SQL= "comment on table TABLE_NAME is 'COMMENT'";
-		String tempSQL= SQL.replace("TABLE_NAME", this.name).replace("COMMENT", comment);
-		int success = this.db.executeUpdate(tempSQL);
+		if(StringUtils.isNotEmpty(comment)) {
+			
+			final String SQL= "comment on table TABLE_NAME is 'COMMENT'";
+			String tempSQL= SQL.replace("TABLE_NAME", this.name).replace("COMMENT", comment);
+			int success = this.dataBase.executeUpdate(tempSQL);
+		}
 	}
 
 }

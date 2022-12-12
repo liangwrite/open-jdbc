@@ -80,6 +80,20 @@ public class MySQLTableImpl extends TableServiceImpl implements MySQLTable {
 		// TODO Auto-generated method stub
 		
 	}
+
+
+	@Override
+	public int getPageCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	@Override
+	public List<Map<String, Object>> getPage(int pageNo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 

@@ -39,26 +39,26 @@ public class TableServiceOracleImpl extends TableServiceImpl implements OracleTa
 		}
 		
 		//
-		String sql= this.db.getDialect().getFields(this.db.getDbName(), this.name);
+		String sql= this.dataBase.getDialect().getFields(this.dataBase.getDbName(), this.name);
 		String id= null; //this.getPrimaryKey();
 		List<FieldService> fieldList= new ArrayList<FieldService>();
 		if(sql==null) //不支持时 
 		{
-			MetaDataService metaDataService= new MetaDataServiceImpl(this.db.getDataSource());
+			MetaDataService metaDataService= new MetaDataServiceImpl(this.dataBase.getDataSource());
 			fieldList= metaDataService.getAllField(this.name);
 			return fieldList;
 		}	
 		
 		
 		
-		ResultSetReaderImpl result = this.db.executeQuery(sql);
+		ResultSetReaderImpl result = this.dataBase.executeQuery(sql);
 		List<Map<String, Object>> mapList = result.mapList();
 		int len= mapList.size();
 		
 		for(int i=0;i<len;i++) {
 			FieldService fieldDetail= new FieldServiceOracleImpl(this);
 			fieldList.add(fieldDetail);
-			fieldDetail.setDbType(this.db.getDbType());
+			fieldDetail.setDbType(this.dataBase.getDbType());
 			
 			Map<String, Object> row= mapList.get(i);
 			
@@ -66,7 +66,7 @@ public class TableServiceOracleImpl extends TableServiceImpl implements OracleTa
 			fieldDetail.setCode((String)row.get("NAME"));
 			//fieldDetail.setCodeCamel(CamelName.toCamelForField(fieldDetail.getCode()));
 			fieldDetail.setComment((String)row.get("COMMENTS"));
-			fieldDetail.setColumnType(ColumnTypeEnum.parse((String)row.get("TYPE"), this.db.getDbType()));
+			fieldDetail.setColumnType(ColumnTypeEnum.parse((String)row.get("TYPE"), this.dataBase.getDbType()));
 			fieldDetail.setNumlength(row.get("NUMLENGTH")==null?null:((BigDecimal)row.get("NUMLENGTH")).intValue());
 			fieldDetail.setCharLength(row.get("CHARLENGTH")==null?null:((BigDecimal)row.get("CHARLENGTH")).intValue());
 			fieldDetail.setNullable("Y".equals(row.get("NULLABLE"))?true:false);
@@ -101,6 +101,25 @@ public class TableServiceOracleImpl extends TableServiceImpl implements OracleTa
 	public String getIdField() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public int getPageCount() {
+		// TODO Auto-generated method stub
+		int count = this.count();
+		int pageCount= count/this.PAGE_SIZE;
+		if(count%this.PAGE_SIZE>0) {
+			pageCount++;
+		}
+		return pageCount;
+	}
+	
+	@Override
+	public List<Map<String, Object>> getPage(int pageNo) {
+		// TODO Auto-generated method stub
+		String sql = this.getDataBase().getDialect().getRow(this.name, pageNo*this.PAGE_SIZE, (pageNo+1)*this.PAGE_SIZE);
+		List<Map<String, Object>> mapList = this.getDataBase().executeQuery(sql).mapList();
+		return mapList;
 	}
 
 }

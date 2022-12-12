@@ -12,7 +12,7 @@
 	</parent>
 	
 	<groupId>cn.fomer</groupId>
-	<artifactId>lib-jdbc-web</artifactId>
+	<artifactId>lib-web</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 

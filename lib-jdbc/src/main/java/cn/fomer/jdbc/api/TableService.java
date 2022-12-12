@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import cn.fomer.common.entity.Message;
 import cn.fomer.jdbc.entity.PKTypeEnum;
 import cn.fomer.jdbc.service.impl.ResultSetReaderImpl;
 
@@ -14,6 +15,7 @@ import cn.fomer.jdbc.service.impl.ResultSetReaderImpl;
  */
 public interface TableService
 {
+	int PAGE_SIZE= 100;
 	String getName();
 	String getComment();
 	String getJavaCamelName();
@@ -93,7 +95,26 @@ public interface TableService
 	/**
 	 * 查询表所有数据
 	 */
+	@Deprecated
 	List<Map<String, Object>> all();
+	
+	/**
+	 * @date 202212
+	 * 查询表所有数据
+	 */
+	default int getPageCount() {
+		throw new RuntimeException(Message.UNSUPPORT);
+	}
+	
+	/**
+	 * @date 202212
+	 * 从0开始
+	 */
+	default List<Map<String, Object>> getPage(int pageNo){
+		throw new RuntimeException(Message.UNSUPPORT);
+	}
+	
+	
 	int count();
 	
 	

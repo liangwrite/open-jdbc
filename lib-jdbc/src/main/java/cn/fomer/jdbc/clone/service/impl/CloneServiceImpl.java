@@ -34,7 +34,7 @@ public class CloneServiceImpl implements CloneService
 	@Override
 	public void cloneTableField(TableService srcTable, TableService toTable) {
 		// TODO Auto-generated method stub
-		System.out.println(String.format("复制%s -> %s...", srcTable.getName(), toTable.getName()));
+		System.out.println(String.format("准备克隆表 %s -> %s...", srcTable.getName(), toTable.getName()));
 		
 		//1 同类型
 		if(srcDB.getDbType()==toDB.getDbType())
@@ -75,10 +75,11 @@ public class CloneServiceImpl implements CloneService
 		
 
 		//2.表注释 
-		System.out.println(String.format("正在添加注释...", ""));
+		System.out.println(String.format("正在添加表注释...", ""));
 		cloneTableComment(srcTable, toTable);
 		
 		//3 字段注释
+		System.out.println(String.format("正在添加字段注释...", ""));
 		List<FieldService> srcFieldList = srcTable.getFieldList();
 		for(FieldService srcField: srcFieldList) {
 			toTable.getField(srcField.getCode()).updateComment(srcField.getComment());
@@ -194,7 +195,6 @@ public class CloneServiceImpl implements CloneService
 		
 		//-1
 		int count_all= 0;
-		int count_done= 0;
 		
 		//0.
 		//System.out.println("1.清空目标表...");
@@ -202,19 +202,25 @@ public class CloneServiceImpl implements CloneService
 		
 		//1.2.一共要复制1000条数据...
 		count_all=srcTable.count();
-		System.out.println("2.将要复制1000条数据...".replace("1000", count_all+""));
+		System.out.println(String.format("开始写入数据（%d条）...", count_all));
 		
 		//3.已完成 57% (23/1000)
-		int n = toTable.insertByMap(srcTable.all());
+		//int n = toTable.insertByMap(srcTable.all());
 
 		
-		List<Map<String, Object>> mapList = srcTable.all();
-		
-		toTable.insertByMap(srcTable.all());
+		//List<Map<String, Object>> mapList = srcTable.all();
+		int pageCount = srcTable.getPageCount();
+		for(int p=0;p<pageCount;p++) {
+			
+			toTable.insertByMap(srcTable.getPage(p));
+			int now= (p+1)*TableService.PAGE_SIZE;
+			System.out.println(String.format("已经写入%d/%d条数据...", now<count_all?now:count_all, count_all));
+		}
+		//toTable.insertByMap(srcTable.all());
 		
 	
 		//4.已完成
-		return n;
+		return count_all;
 	}
 
 

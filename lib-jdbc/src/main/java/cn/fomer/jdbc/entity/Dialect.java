@@ -3,6 +3,7 @@ package cn.fomer.jdbc.entity;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.fomer.common.service.Node;
 import cn.fomer.common.service.Xml;
 import cn.fomer.common.service.impl.XmlImpl;
 
@@ -206,6 +207,22 @@ Map<DbTypeEnum, String> mapQueryFieldOfTable= new HashMap<DbTypeEnum, String>();
 				.replace("tableName", tableName)
 				.replace("10", ""+((dbType==DbTypeEnum.Oracle)?(top+1):top));
 		
+		
+	}
+	
+	/**
+	 * @date 202212
+	 * @param start (]
+	 */
+	public String getRow(String tableName, int start, int end) {
+		//select * from (select ROWNUM i,t.* from TABLE_NAME t) v where v.i &gt;= START and v.i &lt; END
+		String sql = this.getDialectXml().getById("getPage").getNode().getTextContent();
+		String tempSQL = sql
+			.replace("TABLE_NAME", tableName)
+			.replace("START", Integer.toString(start))
+			.replace("END", Integer.toString(end))
+			;
+		return tempSQL;
 		
 	}
 	public String getDbVersion(){ return mapQueryVersion.get(dbType); }	

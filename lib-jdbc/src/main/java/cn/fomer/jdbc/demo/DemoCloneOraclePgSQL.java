@@ -24,11 +24,11 @@ public class DemoCloneOraclePgSQL {
 	public static void main(String[] args) {
 		//
 		DataSourceSimple datasourceOracle= 
-			DataSourceSimpleImpl.newInstanceOracle("chqjtgczl_dev", "chqjtgczl_dev", "192.168.123.115", "orcl"); 
+			DataSourceSimpleImpl.newInstanceOracle("chqjtgczl_dev", "chqjtgczl_dev", "tudou66.com", "orcl", 16804); 
 		
 		//String username, String password, String ip, int port, String dbName, String schemaName
 		DataSourceSimple datasourcePgSQL= 
-				DataSourceSimpleImpl.newInstancePostgreSQL("shaleoil", "Sharewin88323650", "192.168.123.125", 5432, "shaleoil", "ods_jing_tong_ku"); 
+				DataSourceSimpleImpl.newInstancePostgreSQL("shaleoil", "Sharewin88323650", "tudou66.com", 16805, "shaleoil", "ods_jing_tong_ku"); 
 		
 		DataBaseService oracle= new DataBaseServiceImpl(datasourceOracle, true);
 		DataBaseService pgsql= new DataBaseServiceImpl(datasourcePgSQL);
@@ -38,7 +38,7 @@ public class DemoCloneOraclePgSQL {
 		
 		List<String> tableList = Arrays.asList("T_SETTLEMENT", "T_SETTLEMENT_WELL", "T_WELLINFO_GROUP", "T_SETTLEMENT_WELL_SKZY", "T_SETTLEMENT_WELL_CJ", "T_WELLINFO_GROUP_CL", "DATA_DEFINITION");
 		
-		String table= tableList.get(6);
+		String table= "t_settlement_well_cl";
 		TableService srcTable = oracle.getTable(table);
 		TableService toTable = pgsql.getTable(table);
 		cloneService.cloneTableField(srcTable, toTable);

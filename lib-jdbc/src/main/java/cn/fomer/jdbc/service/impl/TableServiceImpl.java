@@ -34,7 +34,7 @@ import lombok.Data;
 @Data
 public abstract class TableServiceImpl implements TableService
 {
-	protected DataBaseService db;
+	protected DataBaseService dataBase;
 	protected final String name;
 	String javaName;
 	TemplateService templateService;
@@ -49,7 +49,7 @@ public abstract class TableServiceImpl implements TableService
 	TableServicePgSQLImpl postgresTable;
 	TableServiceImpl(DataBaseService db,String tableName)
 	{
-		this.db= db;
+		this.dataBase= db;
 		this.name= tableName;
 		//this.javaName= CamelName.toCamelForClass(tableName);
 		
@@ -106,9 +106,9 @@ public abstract class TableServiceImpl implements TableService
 		
 		/*
 		
-		if(db.getDbType()==DbTypeEnum.MaxCompute)
+		if(dataBase.getDbType()==DbTypeEnum.MaxCompute)
 		{
-			fieldList = db.getMetaDataService().getFieldList(tableName);
+			fieldList = dataBase.getMetaDataService().getFieldList(tableName);
 			return fieldList;
 		}
 		
@@ -128,11 +128,11 @@ public abstract class TableServiceImpl implements TableService
 		{
 			
 			
-			else if(db.getDbType()==DbTypeEnum.MySQL) //column_name,data_type
+			else if(dataBase.getDbType()==DbTypeEnum.MySQL) //column_name,data_type
 			{
 				fieldDetail.setCode((String)row.get("COLUMN_NAME"));
 				fieldDetail.setNullable(("NO").equals((String)row.get("IS_NULLABLE"))?false:true);
-				fieldDetail.setColumnType(ColumnTypeEnum.parse((String)row.get("DATA_TYPE"),db.getDbType()));
+				fieldDetail.setColumnType(ColumnTypeEnum.parse((String)row.get("DATA_TYPE"),dataBase.getDbType()));
 				fieldDetail.setComment((String)row.get("COLUMN_COMMENT"));
 				if("PRI".equals((String)row.get("COLUMN_KEY")))
 				{
@@ -143,13 +143,13 @@ public abstract class TableServiceImpl implements TableService
 					fieldDetail.setIsPrimaryKey(false);
 				}
 			}
-			else if(db.getDbType()==DbTypeEnum.Hive) //column_name,data_type
+			else if(dataBase.getDbType()==DbTypeEnum.Hive) //column_name,data_type
 			{
 				
 				
 				//{col_name=id, data_type=int, comment=}
 				fieldDetail.setCode((String)row.get("col_name"));
-				fieldDetail.setColumnType(ColumnTypeEnum.parse((String)row.get("data_type"),db.getDbType()));
+				fieldDetail.setColumnType(ColumnTypeEnum.parse((String)row.get("data_type"),dataBase.getDbType()));
 				fieldDetail.setComment((String)row.get("comment"));
 				
 				
@@ -174,13 +174,13 @@ public abstract class TableServiceImpl implements TableService
 				}
 
 			}
-			else if(db.getDbType()==DbTypeEnum.PostgreSQL) //column_name,data_type
+			else if(dataBase.getDbType()==DbTypeEnum.PostgreSQL) //column_name,data_type
 			{
 				fieldDetail.setCode((String)row.get("column_name"));
 				fieldDetail.setNullable(("NO").equals((String)row.get("is_nullable"))?false:true);
-				fieldDetail.setColumnType(ColumnTypeEnum.parse((String)row.get("data_type"),db.getDbType()));
+				fieldDetail.setColumnType(ColumnTypeEnum.parse((String)row.get("data_type"),dataBase.getDbType()));
 			}			
-			else if(db.getDbType()==DbTypeEnum.MaxCompute) //column_name,data_type
+			else if(dataBase.getDbType()==DbTypeEnum.MaxCompute) //column_name,data_type
 			{
 				//table_schema	table_name	column_name	ordinal_position	column_default	is_nullable	data_type	column_comment	is_partition_key
 				parseForMaxcomputeSQL(fieldDetail, row);
@@ -209,7 +209,7 @@ public abstract class TableServiceImpl implements TableService
 		fieldDetail.setDefaultVal(row.get("column_default"));
 		fieldDetail.setNullable((Boolean)row.get("is_nullable"));
 		fieldDetail.setComment((String)row.get("column_comment"));
-		fieldDetail.setColumnType(ColumnTypeEnum.parse((String)row.get("data_type"),db.getDbType()));
+		fieldDetail.setColumnType(ColumnTypeEnum.parse((String)row.get("data_type"),dataBase.getDbType()));
 		fieldDetail.setIsPartitionField((Boolean)row.get("is_partition_key"));
 		
 		//2.无需对分区字段去重	
@@ -231,21 +231,21 @@ public abstract class TableServiceImpl implements TableService
 	@Override
 	public String getDDL()
 	{
-		String sql= db.getDialect().getTableDDL(name);
+		String sql= dataBase.getDialect().getTableDDL(name);
 		String ddl= null;
-		if(db.getDbType()==DbTypeEnum.Oracle)
+		if(dataBase.getDbType()==DbTypeEnum.Oracle)
 		{
-			ddl= (String)db.executeQuery(sql).singleRowSingleColumn();
+			ddl= (String)dataBase.executeQuery(sql).singleRowSingleColumn();
 			return ddl;		
 		}
-		if(db.getDbType()==DbTypeEnum.MySQL)
+		if(dataBase.getDbType()==DbTypeEnum.MySQL)
 		{
-			Map<String, Object> result= db.executeQuery(sql).singleRow();
+			Map<String, Object> result= dataBase.executeQuery(sql).singleRow();
 			ddl= (String)result.get("Create Table");
 			return ddl;
 		}
 		
-		throw new RuntimeException("unsupport "+db.getDbType().toString());
+		throw new RuntimeException("unsupport "+dataBase.getDbType().toString());
 	}
 	
 
@@ -261,9 +261,11 @@ public abstract class TableServiceImpl implements TableService
 
 		String tempSQL= SQL.replace("TABLE", name);
 		
-		if(db.getDbType()==DbTypeEnum.Oracle) {
+		/*
+		if(dataBase.getDbType()==DbTypeEnum.Oracle) {
 			tempSQL= ORACLE_SQL.replace("TABLE", name);
 		}
+		*/
 		
 		if(StringUtils.isEmpty(filterWhere))
 		{
@@ -273,7 +275,7 @@ public abstract class TableServiceImpl implements TableService
 		{
 			tempSQL+= " where "+filterWhere;			
 		}
-		ResultSetReaderImpl sqlResult= db.executeQuery(tempSQL);
+		ResultSetReaderImpl sqlResult= dataBase.executeQuery(tempSQL);
 		Object count= sqlResult.singleRowSingleColumn();
 		return Integer.valueOf(count.toString());
 	}
@@ -294,8 +296,8 @@ public abstract class TableServiceImpl implements TableService
 	@Override
 	public List<Map<String, Object>> top(int top)
 	{
-		String topSQL = db.getDialect().getTopRow(name, top);
-		return db.executeQuery(topSQL).mapList();
+		String topSQL = dataBase.getDialect().getTopRow(name, top);
+		return dataBase.executeQuery(topSQL).mapList();
 	}
 	
 	/* 
@@ -304,7 +306,7 @@ public abstract class TableServiceImpl implements TableService
 	@Override
 	public int clear() {
 		// TODO Auto-generated method stub
-		return db.executeUpdate("delete from "+name);
+		return dataBase.executeUpdate("delete from "+name);
 	}
 
 
@@ -314,7 +316,7 @@ public abstract class TableServiceImpl implements TableService
 		if(getPKType()==PKTypeEnum.ONE)
 		{
 			String sql= "delete from "+name+" where "+getPrimaryKey().get(0).getCode()+"=?";
-			int n = db.executeUpdate(sql, id);
+			int n = dataBase.executeUpdate(sql, id);
 			return n;			
 		}
 		
@@ -328,7 +330,7 @@ public abstract class TableServiceImpl implements TableService
 		if(getPKType()==PKTypeEnum.ONE)
 		{
 			String sql= "select * from "+name+" where "+getPrimaryKey().get(0).getCode()+"=?";
-			ResultSetReaderImpl result = db.executeQuery(sql, pk);
+			ResultSetReaderImpl result = dataBase.executeQuery(sql, pk);
 			if(result.mapList().size()>0)
 			{
 				return result.mapList().get(0);
@@ -345,7 +347,7 @@ public abstract class TableServiceImpl implements TableService
 	private Object asCompatibleValue(FieldService fieldVO,Object value)
 	{
 		Object compatible= value;
-		if(db.getDbType()==DbTypeEnum.MySQL)
+		if(dataBase.getDbType()==DbTypeEnum.MySQL)
 		{
 			if(fieldVO.getColumnType()==ColumnTypeEnum.MYSQL_DATETIME)
 			{
@@ -362,7 +364,7 @@ public abstract class TableServiceImpl implements TableService
 	@Override
 	public String getDbName() {
 		// TODO Auto-generated method stub
-		return db.getDbName();
+		return dataBase.getDbName();
 	}
 
 
@@ -370,7 +372,7 @@ public abstract class TableServiceImpl implements TableService
 	public List<Map<String, Object>> selectByWhere(String where) {
 		// TODO Auto-generated method stub
 		String sql= "select * from "+name+" where "+where;
-		ResultSetReaderImpl executeQuery = db.executeQuery(sql);
+		ResultSetReaderImpl executeQuery = dataBase.executeQuery(sql);
 		return executeQuery.mapList();
 	}
 
@@ -397,7 +399,7 @@ public abstract class TableServiceImpl implements TableService
 	public List<Map<String, Object>> all() {
 		// TODO Auto-generated method stub
 		String sql= "select * from "+name;
-		ResultSetReaderImpl result = db.executeQuery(sql);
+		ResultSetReaderImpl result = dataBase.executeQuery(sql);
 		return result.mapList();
 	}
 	
@@ -454,13 +456,13 @@ public abstract class TableServiceImpl implements TableService
 		sql+= " where "+pkName+"=?";
 		pArray.add(asCompatibleValue(pk, pkValue));
 	
-		if(db.isEnableLog())
+		if(dataBase.isEnableLog())
 		{
 			System.out.println(sql);
 			System.out.println(new Gson().toJson(pArray));			
 		}
 
-		db.executeUpdate(sql, pArray.toArray());
+		dataBase.executeUpdate(sql, pArray.toArray());
 		
 		return 0;
 	}
@@ -552,7 +554,7 @@ public abstract class TableServiceImpl implements TableService
 			
 			objectList.add(asCompatibleValue(idfFieldDetail, idValue));
 			
-			if(db.isEnableLog())
+			if(dataBase.isEnableLog())
 			{
 				System.out.println(new Gson().toJson(objectList));			
 			}
@@ -597,7 +599,7 @@ public abstract class TableServiceImpl implements TableService
 		if(sql.endsWith(",")) sql= sql.substring(0, sql.length()-1);
 		sql+= " where "+idFieldDetail.getCode()+"=?";
 		
-		if(db.isEnableLog())
+		if(dataBase.isEnableLog())
 		{
 			System.out.println(sql);
 		}
@@ -613,13 +615,13 @@ public abstract class TableServiceImpl implements TableService
 		// TODO Auto-generated method stub
 		
 		Entry<String, List<Object[]>> batch = updateByMapBatch(mapList);
-		if(db.isEnableLog())
+		if(dataBase.isEnableLog())
 		{
 			System.out.println("批量更新语句："+batch.getKey());
 		}
 		
 		
-		int n = db.executeUpdateBatch(batch.getKey(), batch.getValue());
+		int n = dataBase.executeUpdateBatch(batch.getKey(), batch.getValue());
 		
 		
 		
@@ -631,13 +633,13 @@ public abstract class TableServiceImpl implements TableService
 		// TODO Auto-generated method stub
 		
 		Entry<String, List<Object[]>> batch = updateByMapBatch(mapList, id);
-		if(db.isEnableLog())
+		if(dataBase.isEnableLog())
 		{
 			System.out.println("批量更新语句："+batch.getKey());
 		}
 		
 		
-		int n = db.executeUpdateBatch(batch.getKey(), batch.getValue());
+		int n = dataBase.executeUpdateBatch(batch.getKey(), batch.getValue());
 		
 		
 		
@@ -650,7 +652,7 @@ public abstract class TableServiceImpl implements TableService
 	public int insertByMap(Map<String, Object> dataMap)
 	{
 		
-		TableService t= db.getTable(name);
+		TableService t= dataBase.getTable(name);
 		List<FieldService> fieldList= t.getFieldList();
 		
 		Entry<String, List<Object>> entry = insertByMapSQL(dataMap, fieldList, true);
@@ -658,7 +660,7 @@ public abstract class TableServiceImpl implements TableService
 		int result= 0;
 		try
 		{
-			result= db.executeUpdate(entry.getKey(), entry.getValue().toArray());
+			result= dataBase.executeUpdate(entry.getKey(), entry.getValue().toArray());
 		}
 		catch(Exception e)
 		{
@@ -696,7 +698,7 @@ public abstract class TableServiceImpl implements TableService
 		
 		String full= keytext+valuetext;
 		
-		db.log(this, "插入语句"+full);
+		dataBase.log(this, "插入语句"+full);
 		
 		return full;		
 	}
@@ -743,7 +745,7 @@ public abstract class TableServiceImpl implements TableService
 			{
 				
 			}
-			if(fieldVO.getNullable()!=null&&!fieldVO.getNullable()&&(value==null||(db.getDbType()==DbTypeEnum.Oracle&&"".equals(value))))
+			if(fieldVO.getNullable()!=null&&!fieldVO.getNullable()&&(value==null||(dataBase.getDbType()==DbTypeEnum.Oracle&&"".equals(value))))
 			{
 				String message= "该字段定义要求不能为空！"+name+"."+fieldVO.getCode();
 				System.err.println(new Gson().toJson(fieldEntry));
@@ -754,7 +756,7 @@ public abstract class TableServiceImpl implements TableService
 			if(!hasFoundValue)
 			{
 				//hive语法要求拼全字段
-				if(db.getDbType()==DbTypeEnum.Hive)
+				if(dataBase.getDbType()==DbTypeEnum.Hive)
 				{
 					found_total++;
 				}
@@ -790,9 +792,9 @@ public abstract class TableServiceImpl implements TableService
 		String full= keytext+valuetext;
 		
 		
-		//db.log(this, "前台变量"+JSON.toJSONString(dataMap));
-		//db.log(this, "插入语句"+full);
-		//db.log(this, "动态变量"+JSON.toJSONString(varList));
+		//dataBase.log(this, "前台变量"+JSON.toJSONString(dataMap));
+		//dataBase.log(this, "插入语句"+full);
+		//dataBase.log(this, "动态变量"+JSON.toJSONString(varList));
 		
 		Entry<String, List<Object>> entry= new EntryImpl(full, varList);
 		return entry;
@@ -807,7 +809,7 @@ public abstract class TableServiceImpl implements TableService
 		if(mapList.size()==0) return 0;
 		
 		//hive有专用方法
-		if(db.getDbType()==DbTypeEnum.Hive||db.getDbType()==DbTypeEnum.MaxCompute)
+		if(dataBase.getDbType()==DbTypeEnum.Hive||dataBase.getDbType()==DbTypeEnum.MaxCompute)
 		{
 			int n = insertByMapForHive(mapList);
 			return n;
@@ -834,20 +836,12 @@ public abstract class TableServiceImpl implements TableService
 			Map<String, Object> rowMap= mapList.get(r);
 			
 			//maxcompute语法禁止显示字段列表
-			boolean showFieldList= db.getDbType()==DbTypeEnum.MaxCompute?false:true;
+			boolean showFieldList= dataBase.getDbType()==DbTypeEnum.MaxCompute?false:true;
 			Entry<String, List<Object>> rowEntry = insertByMapSQL(rowMap, fieldList, showFieldList);
 			
 			
 			if(sql==null) sql= rowEntry.getKey();
 			list.add(rowEntry.getValue().toArray());
-			
-			
-			if(r%10==0) {
-				System.out.println("已完成 ({done}/{all})"
-						.replace("{done}", (r+1)+"")
-						.replace("{all}", mapList.size()+"")
-						);	
-			}
 		}
 		
 		//生成语句和参数
@@ -855,8 +849,7 @@ public abstract class TableServiceImpl implements TableService
 		//执行
 		try
 		{
-			System.out.println(String.format("正在插入%d条数据...", mapList.size()));
-			int n= db.executeUpdateBatch(sql, list);
+			int n= dataBase.executeUpdateBatch(sql, list);
 			return n;
 		}
 		catch(Exception e)
@@ -917,13 +910,13 @@ public abstract class TableServiceImpl implements TableService
 		//System.out.println("批量插入的SQL: "+sql);
 		
 		//执行
-		if(db.isEnableLog())
+		if(dataBase.isEnableLog())
 		{
 			System.out.println("批量插入的SQL: "+sql);
 		}
 		try
 		{
-			int n= db.executeUpdate(sql);
+			int n= dataBase.executeUpdate(sql);
 			return n;
 		}
 		catch(Exception e)
@@ -987,13 +980,13 @@ ds
 		//System.out.println("批量插入的SQL: "+sql);
 		
 		//执行
-		if(db.isEnableLog())
+		if(dataBase.isEnableLog())
 		{
 			System.out.println("批量插入的SQL: "+sql);
 		}
 		try
 		{
-			int n= db.executeUpdate(sql);
+			int n= dataBase.executeUpdate(sql);
 			return n;
 		}
 		catch(Exception e)
@@ -1053,13 +1046,13 @@ ds
 		//System.out.println("批量插入的SQL: "+sql);
 		
 		//执行
-		if(db.isEnableLog())
+		if(dataBase.isEnableLog())
 		{
 			System.out.println("批量插入的SQL: "+sql);
 		}
 		try
 		{
-			int n= db.executeUpdate(sql);
+			int n= dataBase.executeUpdate(sql);
 			return n;
 		}
 		catch(Exception e)
@@ -1080,8 +1073,8 @@ ds
 	@Override
 	public boolean drop() {
 		// TODO Auto-generated method stub
-		String dropTableSQL = db.getDialect().getDropTableSQL(name);
-		int n = db.executeUpdate(dropTableSQL);
+		String dropTableSQL = dataBase.getDialect().getDropTableSQL(name);
+		int n = dataBase.executeUpdate(dropTableSQL);
 		return true;
 	}
 	
@@ -1106,22 +1099,22 @@ ds
 		// TODO Auto-generated method stub
 		int executeUpdate= 0;
 		
-		if(db.getDbType()==DbTypeEnum.Oracle)
+		if(dataBase.getDbType()==DbTypeEnum.Oracle)
 		{
 			String sql= "create table {TARGET_TABLE} as SELECT *  FROM {SOURCE_TABLE} WHERE 1=2";
 			sql= sql
 					.replace("{SOURCE_TABLE}", name)
 					.replace("{TARGET_TABLE}", targetTable)
 					;
-			//if(db.isEnableLog()) 
+			//if(dataBase.isEnableLog()) 
 			{
 				System.out.println(sql);
 			}
 			
 			
-			executeUpdate = db.executeUpdate(sql);
+			executeUpdate = dataBase.executeUpdate(sql);
 		}
-		if(db.getDbType()==DbTypeEnum.Hive||db.getDbType()==DbTypeEnum.MaxCompute)
+		if(dataBase.getDbType()==DbTypeEnum.Hive||dataBase.getDbType()==DbTypeEnum.MaxCompute)
 		{
 			
 			String sql= "create table if not exists {TARGET_TABLE} as select * from {SOURCE_TABLE} WHERE 1=2";
@@ -1129,13 +1122,13 @@ ds
 					.replace("{SOURCE_TABLE}", name)
 					.replace("{TARGET_TABLE}", targetTable)
 					;
-			if(db.isEnableLog()) 
+			if(dataBase.isEnableLog()) 
 			{
 				System.out.println(sql);
 			}
 			
 			
-			executeUpdate = db.executeUpdate(sql);
+			executeUpdate = dataBase.executeUpdate(sql);
 		}
 		
 		return executeUpdate>0?true:false;
@@ -1146,19 +1139,19 @@ ds
 	public boolean createTableLikeTo(String totable) {
 		// TODO Auto-generated method stub
 		//create table if not exists t_user_bak like t_user
-		if(db.getDbType()==DbTypeEnum.Oracle)
+		if(dataBase.getDbType()==DbTypeEnum.Oracle)
 		{
 			boolean success = createTableAsTo(totable);
 			return success;
 		}
-		else if(db.getDbType()==DbTypeEnum.Hive||db.getDbType()==DbTypeEnum.MaxCompute)
+		else if(dataBase.getDbType()==DbTypeEnum.Hive||dataBase.getDbType()==DbTypeEnum.MaxCompute)
 		{
 			String exeCString= "create table if not exists {TO_TABLE} like {SOURCE_TABLE}"
 					.replace("{TO_TABLE}", totable)
 					.replace("{SOURCE_TABLE}", name)
 					;
 			
-			int result = db.executeUpdate(exeCString);
+			int result = dataBase.executeUpdate(exeCString);
 			
 			return result>0?true:false;
 			
@@ -1209,22 +1202,22 @@ ds
 	public ResultSetReaderImpl topInfo(int top) {
 		// TODO Auto-generated method stub
 		System.out.println(name);
-		String topSQL = db.getDialect().getTopRow(name, top);
-		return db.executeQuery(topSQL);
+		String topSQL = dataBase.getDialect().getTopRow(name, top);
+		return dataBase.executeQuery(topSQL);
 	}
 
 
 	@Override
 	public DataBaseService getDataBase() {
 		// TODO Auto-generated method stub
-		return db;
+		return dataBase;
 	}
 
 
 	@Override
 	public String getComment() {
 		// TODO Auto-generated method stub
-		String sql = getDataBase().getDialect().getTableComment(db.getDbName(), name);
+		String sql = getDataBase().getDialect().getTableComment(dataBase.getDbName(), name);
 		String comment= (String)getDataBase().executeQuery(sql).singleRowSingleColumn();
 		return comment;
 	}
