@@ -18,7 +18,7 @@ public class DemoBLQ {
 		// TODO Auto-generated method stub
 		//
 		DataSourceSimple srcDs =
-		DataSourceSimpleImpl.newInstance("jdbc:kingbase8://47.108.88.232:54321/mes?currentSchema=mes_business", "com.kingbase8.Driver", "system", "mes", "mes_business");
+		DataSourceSimpleImpl.newInstance("jdbc:kingbase8://127.0.0.1:54321/mes?currentSchema=mes_business", "com.kingbase8.Driver", "system", "mes", "mes_business");
 		//(DataSource ds, String dbName, DbTypeEnum dbTypeEnum)
 		//public static SuperDB newInstance(DataSource ds, String dbName, DbTypeEnum dbTypeEnum)
 		DataBaseService db= new DataBaseServiceImpl(srcDs);

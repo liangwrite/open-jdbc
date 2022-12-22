@@ -15,7 +15,7 @@ public class DemoXD {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//
-		DataSourceSimple srcDs = DataSourceSimpleImpl.newInstanceOracle("mes", "mes", "47.108.88.232", "ORCL");	
+		DataSourceSimple srcDs = DataSourceSimpleImpl.newInstanceOracle("mes", "mes", "127.0.0.1", "ORCL");	
 		DataBaseService dataBaseService= new DataBaseServiceImpl(srcDs);
 		
 		TableService table = dataBaseService.getTable("MM_STORAGE_STOCK_IN");

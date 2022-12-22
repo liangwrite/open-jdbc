@@ -33,7 +33,7 @@ public class DemoSummaryXD {
 	
 	public static void main(String[] args) throws IOException {
 		//
-		DataSourceSimple srcDs = DataSourceSimpleImpl.newInstanceOracle("mes", "mes", "47.108.88.232", "ORCL");
+		DataSourceSimple srcDs = DataSourceSimpleImpl.newInstanceOracle("mes", "mes", "127.0.0.1", "ORCL");
 		DataBaseService db= new DataBaseServiceImpl(srcDs);
 		SummaryService summaryService = db.getSummaryService();
 		summaryService.toHtmlFile(20, SystemHelper.getDesktop("summary.html").getCanonicalPath());

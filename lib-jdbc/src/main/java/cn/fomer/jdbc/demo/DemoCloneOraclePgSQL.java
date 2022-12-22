@@ -24,11 +24,11 @@ public class DemoCloneOraclePgSQL {
 	public static void main(String[] args) {
 		//
 		DataSourceSimple datasourceOracle= 
-			DataSourceSimpleImpl.newInstanceOracle("chqjtgczl_dev", "chqjtgczl_dev", "tudou66.com", "orcl", 16804); 
+			DataSourceSimpleImpl.newInstanceOracle("chqjtgczl_dev", "chqjtgczl_dev", "127.0.0.1", "orcl", 16804); 
 		
 		//String username, String password, String ip, int port, String dbName, String schemaName
 		DataSourceSimple datasourcePgSQL= 
-				DataSourceSimpleImpl.newInstancePostgreSQL("shaleoil", "Sharewin88323650", "tudou66.com", 16805, "shaleoil", "ods_jing_tong_ku"); 
+				DataSourceSimpleImpl.newInstancePostgreSQL("shaleoil", "Sharewin88323650", "127.0.0.1", 16805, "shaleoil", "ods_jing_tong_ku"); 
 		
 		DataBaseService oracle= new DataBaseServiceImpl(datasourceOracle, true);
 		DataBaseService pgsql= new DataBaseServiceImpl(datasourcePgSQL);
