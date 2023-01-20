@@ -6,7 +6,7 @@ import org.apache.commons.lang.StringUtils;
 
 import cn.fomer.common.entity.ResultVO;
 import cn.fomer.jdbc.api.DataBaseService;
-import cn.fomer.jdbc.api.FieldService;
+import cn.fomer.jdbc.api.ColumnService;
 import cn.fomer.jdbc.api.TableService;
 import cn.fomer.jdbc.clone.service.ISQLBuilderService;
 import cn.fomer.jdbc.entity.ColumnTypeEnum;
@@ -29,7 +29,7 @@ public class SqlBuilderServicePgSQLImpl extends SQLBuilderServiceImpl implements
 	
 
 	@Override
-	public String createFieldSQL(FieldService srcFieldVO) {
+	public String createFieldSQL(ColumnService srcFieldVO) {
 		// TODO Auto-generated method stub
 		String text= "";
 		if(srcFieldVO.getDbType()==DbTypeEnum.Oracle) {

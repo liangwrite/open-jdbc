@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root id="root">
+	<select id="table_list">
+	   SELECT tablename as name FROM pg_tables where schemaname = 'SCHEMA_NAME'
+	</select>
+	<select id="field_list">
+		select 
+			table_schema as schema_name, table_name, 
+			column_name, ordinal_position as column_no, udt_name as column_type, 
+			character_maximum_length as column_length, is_nullable as column_nullable 
+		from information_schema.columns 
+		where table_schema='SCHEMA_NAME' and lower(table_name)=lower('TABLE_NAME')		
+	</select>
+	
+	<!-- 查询主键 -->
+	<select id="selectId">
+		select  col.column_name from user_constraints con,user_cons_columns col
+		where con.constraint_name=col.constraint_name and con.constraint_type='P'
+		and col.table_name='TABLE_NAME'
+	</select>
+	
+	<select id="table_comment">
+		select description from pg_description 
+		where 
+		    objsubid=0
+		    and 
+		    objoid=(
+		        select relfilenode from pg_class 
+		        where 
+		        relowner=(select nspowner from pg_namespace where nspname='DB_NAME')
+		        and
+		        relname='TABLE_NAME' 
+		    )    
+		
+	</select>
+	
+	<select id="select-column-comment">
+		select
+		    v_column.column_name,
+		    v_comment.description   
+		from (
+		    select * from (
+		        select
+		            pg_database.datname as db_name,
+		            pg_namespace.nspname as schema_name,
+		            relname as table_name,
+		            objsubid as column_no,
+		            description
+		        from pg_description
+		        join pg_class on pg_class.oid=pg_description.objoid
+		        left join pg_database on pg_database.datdba=pg_class.relowner
+		        left join pg_namespace on pg_namespace.oid=pg_class.relnamespace
+		    ) v
+		    where 1=1
+		    order by db_name, schema_name, table_name, column_no
+		) v_comment
+		
+		left join (
+		    select
+		        table_catalog as db_name, table_schema as schema_name, table_name, column_name, ordinal_position as column_no, udt_name as column_type
+		    from information_schema.columns
+		    where 1=1
+		    order by table_catalog, table_schema, table_name, ordinal_position
+		) v_column on v_column.schema_name=v_comment.schema_name and v_column.table_name=v_comment.table_name and v_column.column_no=v_comment.column_no
+		
+		where 1=1
+		    -- and v_comment.db_name='DB_NAME'
+		    and v_comment.schema_name='SCHEMA_NAME'
+		    and v_comment.table_name='TABLE_NAME'		
+		order by
+		    v_comment.db_name,
+		    v_comment.schema_name,
+		    v_comment.table_name,
+		    v_comment.column_no
+	
+	</select>
+	
+</root>

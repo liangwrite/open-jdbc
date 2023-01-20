@@ -1,11 +1,11 @@
 package cn.fomer.jdbc.clone.service.impl;
 
 import cn.fomer.jdbc.api.DataBaseService;
-import cn.fomer.jdbc.api.FieldService;
+import cn.fomer.jdbc.api.ColumnService;
 import cn.fomer.jdbc.api.TableService;
 import cn.fomer.jdbc.clone.service.ISQLBuilderService;
 import cn.fomer.jdbc.entity.DbTypeEnum;
-import cn.fomer.jdbc.service.impl.FieldServiceImpl;
+import cn.fomer.jdbc.service.impl.ColumnServiceImpl;
 import cn.fomer.jdbc.service.impl.FieldServicePgSQLImpl;
 import cn.fomer.jdbc.service.impl.TableServiceOracleImpl;
 import cn.fomer.jdbc.service.impl.TableServicePgSQLImpl;
@@ -39,12 +39,12 @@ public class SQLFactory {
 	}
 	
 	
-	public static FieldService getFieldService(TableService table) {
+	public static ColumnService getFieldService(TableService table) {
 		if(table.getDataBase().getDbType()==DbTypeEnum.PostgreSQL) {
 			return new FieldServicePgSQLImpl(table);
 		}
 		
 		
-		return new FieldServiceImpl(table);
+		return new ColumnServiceImpl(table);
 	}
 }

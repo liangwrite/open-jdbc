@@ -3,7 +3,7 @@ package cn.fomer.jdbc.clone.service;
 import java.util.List;
 
 import cn.fomer.common.entity.ResultVO;
-import cn.fomer.jdbc.api.FieldService;
+import cn.fomer.jdbc.api.ColumnService;
 import cn.fomer.jdbc.api.TableService;
 
 /**
@@ -16,5 +16,5 @@ import cn.fomer.jdbc.api.TableService;
 public interface ISQLBuilderService {
 	ResultVO getTableDDL(TableService table);
 	
-	String createFieldSQL(FieldService fieldVO);
+	String createFieldSQL(ColumnService fieldVO);
 }

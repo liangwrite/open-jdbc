@@ -15,7 +15,7 @@ import cn.fomer.jdbc.datasource.DataSourceSimpleImpl;
 import cn.fomer.jdbc.entity.DbTypeEnum;
 import cn.fomer.jdbc.service.DataSourceSimple;
 import cn.fomer.jdbc.service.impl.DataBaseServiceImpl;
-import cn.fomer.jdbc.service.impl.FieldServiceImpl;
+import cn.fomer.jdbc.service.impl.ColumnServiceImpl;
 import cn.fomer.jdbc.service.impl.ResultSetReaderImpl;
 
 /**

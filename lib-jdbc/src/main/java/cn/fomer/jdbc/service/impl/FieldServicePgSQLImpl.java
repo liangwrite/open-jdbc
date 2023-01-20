@@ -11,7 +11,7 @@ import cn.fomer.jdbc.api.TableService;
  * @email liang@163.com
  * @date 2022-12-09
  */
-public class FieldServicePgSQLImpl extends FieldServiceImpl {
+public class FieldServicePgSQLImpl extends ColumnServiceImpl {
 
 	public FieldServicePgSQLImpl(TableService table) {
 		// TODO Auto-generated constructor stub

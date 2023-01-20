@@ -30,7 +30,7 @@ public interface TableService
 	 * 说明 从另外一个数据库
 	 * @date 2022-07
 	 */
-	void createFieldFromDiffrentDB(FieldService src);
+	void createFieldFromDiffrentDB(ColumnService src);
 	
 	/**
 	 * 202011 根据主键删除
@@ -54,7 +54,7 @@ public interface TableService
 	/**
 	 * 获取主键（只支持单主键）
 	 */
-	List<FieldService> getPrimaryKey();
+	List<ColumnService> getPrimaryKey();
 	
 	
 	
@@ -67,14 +67,14 @@ public interface TableService
 	/**
 	 * 20210401
 	 */
-	public FieldService getField(String name);
+	public ColumnService getField(String name);
 	
 	/**
 	 * 2018-11-03 Oracle 返回都是大写
 	 * 202103 hive的分区字段会显示两遍/max的分区字段只会显示一遍
 	 * <p>maxcompute比较特殊，只能通过metadata的方式</p>
 	 */
-	public List<FieldService> getFieldList();
+	public List<ColumnService> getColumnList();
 	
 	
 	public String getDDL();

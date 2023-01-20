@@ -15,7 +15,7 @@ import javax.sql.DataSource;
 import cn.fomer.jdbc.entity.DbTypeEnum;
 import cn.fomer.jdbc.entity.Dialect;
 import cn.fomer.jdbc.entity.NotSupportError;
-import cn.fomer.jdbc.entity.PostGresqlConfig;
+import cn.fomer.jdbc.entity.PgSQLConfig;
 import cn.fomer.jdbc.service.DataSourceSimple;
 
 /**
@@ -117,43 +117,19 @@ public class DataSourceSimpleImpl extends DataSourceSimple
 		return dataSource;
 	}
 	
-	/**
-	 * 2021-08-18
-	 */
-	public static DataSourceSimple newInstancePostgreSQL(String username, String password, String ip, int port, String dbName)
-	{
-		//String dbUrlPostgreSQL = "jdbc:postgresql://127.0.0.1:5432/dbName?currentSchema=schemaName";
-		String url= getUrl(DbTypeEnum.PostgreSQL)
-				.replace("127.0.0.1:5432", ip+":"+port)
-				.replace("dbName", dbName)
-				.replace("schemaName", "public")
-				;
-		DataSourceSimpleImpl dataSource = new DataSourceSimpleImpl(username, password, url, dbName);
-		
-		return dataSource;
-	}
 	
 	/**
 	 * 2022-07
 	 */
-	public static DataSourceSimple newInstancePostgreSQL(String username, String password, String ip, int port, String dbName, String schemaName)
+	public static DataSourceSimple newInstancePostgreSQL(PgSQLConfig conn)
 	{
 		//String dbUrlPostgreSQL = "jdbc:postgresql://127.0.0.1:5432/dbName?currentSchema=schemaName";
 		String url= getUrl(DbTypeEnum.PostgreSQL)
-				.replace("127.0.0.1:5432", ip+":"+port)
-				.replace("dbName", dbName)
-				.replace("schemaName", schemaName)
+				.replace("127.0.0.1:5432", conn.getIp()+":"+conn.getPort())
+				.replace("dbName", conn.getDbName())
+				.replace("schemaName", conn.getSchemaName())
 				;
-		DataSourceSimpleImpl dataSource = new DataSourceSimpleImpl(username, password, url, dbName, schemaName);
-		
-		
-		PostGresqlConfig config= new PostGresqlConfig();
-		config.setUsername(username);
-		config.setPassword(password);
-		config.setIp(ip);
-		config.setPort(port);
-		config.setDbName(dbName);
-		config.setSchemaName(schemaName);
+		DataSourceSimpleImpl dataSource = new DataSourceSimpleImpl(conn.getUsername(), conn.getPassword(), url, conn.getDbName(), conn.getSchemaName());
 		
 		return dataSource;
 	}

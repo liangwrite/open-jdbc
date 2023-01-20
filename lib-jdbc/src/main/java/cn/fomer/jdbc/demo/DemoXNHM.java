@@ -7,7 +7,7 @@ import java.util.Map;
 
 import com.google.gson.Gson;
 import cn.fomer.jdbc.api.DataBaseService;
-import cn.fomer.jdbc.api.FieldService;
+import cn.fomer.jdbc.api.ColumnService;
 import cn.fomer.jdbc.datasource.DataSourceSimpleImpl;
 import cn.fomer.jdbc.entity.DbTypeEnum;
 import cn.fomer.jdbc.service.DataSourceSimple;
@@ -37,8 +37,8 @@ public class DemoXNHM {
 		List<String> notField= Arrays.asList("zhen", "xian");
 		
 		//
-		List<FieldService> fieldList = db.getTable("dd_content_attr").getFieldList();
-		for(FieldService f: fieldList)
+		List<ColumnService> fieldList = db.getTable("dd_content_attr").getColumnList();
+		for(ColumnService f: fieldList)
 		{
 			//
 			String columnName = f.getCode();

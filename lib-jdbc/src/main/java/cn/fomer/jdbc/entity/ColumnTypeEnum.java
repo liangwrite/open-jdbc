@@ -3,8 +3,6 @@ package cn.fomer.jdbc.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.management.RuntimeErrorException;
-
 import lombok.Getter;
 
 /**
@@ -55,6 +53,8 @@ public enum ColumnTypeEnum
 	POSTGRESSQL_SMALLINT("smallint",DbTypeEnum.PostgreSQL, Integer.class),
 	POSTGRESSQL_NUMERIC("numeric",DbTypeEnum.PostgreSQL, Double.class),
 	POSTGRESSQL_VARCHAR("varchar",DbTypeEnum.PostgreSQL, String.class),
+	POSTGRESSQL_DATE("date",DbTypeEnum.PostgreSQL, Date.class),
+	POSTGRESSQL_INT4("int4",DbTypeEnum.PostgreSQL, Integer.class),
 	
 	
 	/**** 202109 ****/
@@ -102,7 +102,19 @@ public enum ColumnTypeEnum
 	 */
 	public boolean isString()
 	{
-		if(this==ORACLE_VARCHAR2)
+		if(this.javaType==String.class)
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * 2021-12 是否是String类型
+	 */
+	public boolean isDate()
+	{
+		if(this.javaType==Date.class)
 		{
 			return true;
 		}

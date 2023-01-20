@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.fomer.jdbc.api.DataBaseService;
-import cn.fomer.jdbc.api.FieldService;
+import cn.fomer.jdbc.api.ColumnService;
 import cn.fomer.jdbc.api.OracleTable;
 import cn.fomer.jdbc.clone.service.impl.FieldServiceOracleImpl;
 import cn.fomer.jdbc.entity.ColumnTypeEnum;
@@ -31,9 +31,9 @@ public class TableServiceOracleImpl extends TableServiceImpl implements OracleTa
 	}
 
 	@Override
-	public List<FieldService> getFieldList() {
+	public List<ColumnService> getColumnList() {
 		// TODO Auto-generated method stub
-		List<FieldService> cacheFieldList = super.getFieldList();
+		List<ColumnService> cacheFieldList = super.getColumnList();
 		if(cacheFieldList!=null) {
 			return cacheFieldList;
 		}
@@ -41,7 +41,7 @@ public class TableServiceOracleImpl extends TableServiceImpl implements OracleTa
 		//
 		String sql= this.dataBase.getDialect().getFields(this.dataBase.getDbName(), this.name);
 		String id= null; //this.getPrimaryKey();
-		List<FieldService> fieldList= new ArrayList<FieldService>();
+		List<ColumnService> fieldList= new ArrayList<ColumnService>();
 		if(sql==null) //不支持时 
 		{
 			MetaDataService metaDataService= new MetaDataServiceImpl(this.dataBase.getDataSource());
@@ -56,7 +56,7 @@ public class TableServiceOracleImpl extends TableServiceImpl implements OracleTa
 		int len= mapList.size();
 		
 		for(int i=0;i<len;i++) {
-			FieldService fieldDetail= new FieldServiceOracleImpl(this);
+			ColumnService fieldDetail= new FieldServiceOracleImpl(this);
 			fieldList.add(fieldDetail);
 			fieldDetail.setDbType(this.dataBase.getDbType());
 			
@@ -88,7 +88,7 @@ public class TableServiceOracleImpl extends TableServiceImpl implements OracleTa
 	}
 	
 	@Override
-	public List<FieldService> getPrimaryKey() {
+	public List<ColumnService> getPrimaryKey() {
 		// TODO Auto-generated method stub
 		String sql = this.getDataBase().getDialect().getPrimaryKeyForOracle(this.name);
 		ResultSetReaderImpl result = this.getDataBase().executeQuery(sql);

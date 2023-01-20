@@ -5,7 +5,7 @@ package cn.fomer.jdbc.service;
 
 import java.util.List;
 
-import cn.fomer.jdbc.api.FieldService;
+import cn.fomer.jdbc.api.ColumnService;
 import cn.fomer.jdbc.entity.DbTypeEnum;
 
 /**
@@ -30,7 +30,7 @@ public interface MetaDataService {
 	 * maxcompute 新建的表通过SQL可能查不到分区字段
 	 * </>
 	 */
-	List<FieldService> getAllField(String tableName);
+	List<ColumnService> getAllField(String tableName);
 	
 	/**
 	 * 202104

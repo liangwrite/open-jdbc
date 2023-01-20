@@ -10,8 +10,9 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import cn.fomer.jdbc.api.DataBaseService;
-import cn.fomer.jdbc.api.FieldService;
+import cn.fomer.jdbc.api.ColumnService;
 import cn.fomer.jdbc.api.PostgresTable;
+import cn.fomer.jdbc.entity.ColumnTypeEnum;
 import cn.fomer.jdbc.service.MetaDataService;
 
 /**
@@ -25,11 +26,11 @@ public class TableServicePgSQLImpl extends TableServiceImpl implements PostgresT
 	}
 
 	@Override
-	public List<FieldService> getFieldList() {
+	public List<ColumnService> getColumnList() {
 		// TODO Auto-generated method stub
-		String sql=  this.getDataBase().getDialect().getFields(this.getDataBase().getSchemaName(),this.getName());
+		String sql=  this.getDataBase().getDialect().getFieldsForPgSQL(this.getDataBase().getSchemaName(),this.getName());
 		
-		List<FieldService> fieldList= new ArrayList<FieldService>();
+		List<ColumnService> fieldList= new ArrayList<ColumnService>();
 		if(sql==null) //不支持时 
 		{
 			MetaDataService metaDataService= new MetaDataServiceImpl(this.getDataBase().getDataSource());
@@ -39,12 +40,11 @@ public class TableServicePgSQLImpl extends TableServiceImpl implements PostgresT
 		
 		
 		
-		Map<String, String> fieldCommentMap = getFieldComment();
+		Map<String, String> fieldCommentMap = getColumnComment();
 		ResultSetReaderImpl res = this.getDataBase().executeQuery(sql);
 		List<Map<String, Object>> mapList = res.mapList();
-		int len= mapList.size();
-		for(int i=0;i<len;i++) {
-			FieldService fieldDetail= new FieldServicePgSQLImpl(this);
+		for(int i=0;i<mapList.size();i++) {
+			ColumnService fieldDetail= new FieldServicePgSQLImpl(this);
 			fieldList.add(fieldDetail);
 			
 			
@@ -52,9 +52,10 @@ public class TableServicePgSQLImpl extends TableServiceImpl implements PostgresT
 			
 			fieldDetail.setCode((String)row.get("column_name"));
 			fieldDetail.setComment(fieldCommentMap.get(fieldDetail.getCode()));
-			fieldDetail.setNullable("YES".equals(row.get("is_nullable")));
-			fieldDetail.setType((String)row.get("udt_name"));
-			fieldDetail.setOrdinalPosition((Integer)row.get("ordinal_position"));			
+			fieldDetail.setNullable("YES".equals(row.get("columnn_nullable")));
+			fieldDetail.setType((String)row.get("column_type"));
+			fieldDetail.setOrdinalPosition((Integer)row.get("column_no"));
+			fieldDetail.setColumnType(ColumnTypeEnum.parse(fieldDetail.getType(), this.dataBase.getDbType()));
 		}
 		return fieldList;
 	}
@@ -67,9 +68,9 @@ public class TableServicePgSQLImpl extends TableServiceImpl implements PostgresT
 		return comment;
 	}
 
-	public Map<String, String> getFieldComment() {
+	public Map<String, String> getColumnComment() {
 		// TODO Auto-generated method stub
-		String sql = this.getDataBase().getDialect().getFieldComment(this.getDataBase().getDbName(), this.getName());
+		String sql = this.getDataBase().getDialect().getColumnCommentForPgSQL(this.getDataBase().getSchemaName(), this.getName());
 		Map<String, String> dictMap = this.getDataBase().executeQuery(sql).getDictMap();
 		return dictMap;
 	}

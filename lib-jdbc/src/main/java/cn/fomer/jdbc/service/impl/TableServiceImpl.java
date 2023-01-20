@@ -12,7 +12,7 @@ import com.google.gson.Gson;
 
 import cn.fomer.common.entity.EntryImpl;
 import cn.fomer.jdbc.api.DataBaseService;
-import cn.fomer.jdbc.api.FieldService;
+import cn.fomer.jdbc.api.ColumnService;
 import cn.fomer.jdbc.api.MySQLTable;
 import cn.fomer.jdbc.api.OracleTable;
 import cn.fomer.jdbc.api.TableService;
@@ -71,10 +71,10 @@ public abstract class TableServiceImpl implements TableService
 
 	
 	@Override
-	public FieldService getField(String name) {
+	public ColumnService getField(String name) {
 		// TODO Auto-generated method stub
-		List<FieldService> allField = getFieldList();
-		for(FieldService detail: allField)
+		List<ColumnService> allField = getColumnList();
+		for(ColumnService detail: allField)
 		{
 			if(detail.getCode().equalsIgnoreCase(name)) return detail;
 		}
@@ -84,10 +84,10 @@ public abstract class TableServiceImpl implements TableService
 	
 	
 	@Override
-	public List<FieldService> getFieldList()
+	public List<ColumnService> getColumnList()
 	{
 		//0 从缓存读取
-		List<FieldService> fieldList= new ArrayList<FieldService>();;
+		List<ColumnService> fieldList= new ArrayList<ColumnService>();;
 		
 		//1.从缓存中读取
 		for(String tableString:this.getDataBase().getTableFieldCache().keySet())
@@ -200,7 +200,7 @@ public abstract class TableServiceImpl implements TableService
 	/**
 	 * 2021-05-04 通过SQL的方式，新建的表获取不到
 	 */
-	void parseForMaxcomputeSQL(FieldService fieldDetail, Map<String, Object> row)
+	void parseForMaxcomputeSQL(ColumnService fieldDetail, Map<String, Object> row)
 	{
 		fieldDetail.setSchemaName((String)row.get("table_schema"));
 		fieldDetail.setTableName((String)row.get("table_name"));
@@ -217,11 +217,11 @@ public abstract class TableServiceImpl implements TableService
 	}
 
 	@Override
-	public List<FieldService> getPrimaryKey() {
+	public List<ColumnService> getPrimaryKey() {
 		// TODO Auto-generated method stub
-		List<FieldService> fieldList = getFieldList();
-		List<FieldService> pkList= new ArrayList<FieldService>();
-		for(FieldService f:fieldList)
+		List<ColumnService> fieldList = getColumnList();
+		List<ColumnService> pkList= new ArrayList<ColumnService>();
+		for(ColumnService f:fieldList)
 		{
 			if(f.getIsPrimaryKey()) pkList.add(f);
 		}
@@ -344,7 +344,7 @@ public abstract class TableServiceImpl implements TableService
 	/**
 	 * 202011 获取字段兼容的值。比如datetime字段，而且值为long，那么应该转换为Date
 	 */
-	private Object asCompatibleValue(FieldService fieldVO,Object value)
+	private Object asCompatibleValue(ColumnService fieldVO,Object value)
 	{
 		Object compatible= value;
 		if(dataBase.getDbType()==DbTypeEnum.MySQL)
@@ -380,10 +380,10 @@ public abstract class TableServiceImpl implements TableService
 	@Override
 	public PKTypeEnum getPKType() {
 		// TODO Auto-generated method stub
-		List<FieldService> fieldList = getFieldList();
+		List<ColumnService> fieldList = getColumnList();
 
 		int pkCount= 0;
-		for(FieldService f:fieldList)
+		for(ColumnService f:fieldList)
 		{
 			if(f.getIsPrimaryKey()) pkCount++;
 		}
@@ -423,7 +423,7 @@ public abstract class TableServiceImpl implements TableService
 			System.err.println("没有主键！");
 			return 0;
 		}
-		FieldService pk= getPrimaryKey().get(0);
+		ColumnService pk= getPrimaryKey().get(0);
 		String pkName= pk.getCode();
 		Object pkValue= jdbcMap.getFieldEntry(pkName).getValue();
 		
@@ -433,9 +433,9 @@ public abstract class TableServiceImpl implements TableService
 		List<Object> pArray= new ArrayList<>();
 		
 		boolean found= false;
-		for(int i=0;i<getFieldList().size();i++)
+		for(int i=0;i<getColumnList().size();i++)
 		{
-			FieldService fieldDetail= getFieldList().get(i);
+			ColumnService fieldDetail= getColumnList().get(i);
 			if(fieldDetail.getIsPrimaryKey()) continue; //不能拼主键
 	
 			Entry<String, Object> pair = jdbcMap.getFieldEntry(fieldDetail.getCode());
@@ -485,7 +485,7 @@ public abstract class TableServiceImpl implements TableService
 	public Entry<String, List<Object[]>> updateByMapBatch(List<Map<String, Object>> mapList, String id)
 	{
 		//1.主键检查
-		FieldService idfFieldDetail= null;
+		ColumnService idfFieldDetail= null;
 		
 		if(StringUtils.isEmpty(id))
 		{
@@ -528,9 +528,9 @@ public abstract class TableServiceImpl implements TableService
 			Object idValue= jdbcMap.getFieldEntry(idfFieldDetail.getCode()).getValue();
 
 			
-			for(int i=0;i<getFieldList().size();i++)
+			for(int i=0;i<getColumnList().size();i++)
 			{
-				FieldService fieldDetail= getFieldList().get(i);
+				ColumnService fieldDetail= getColumnList().get(i);
 				if(fieldDetail.getIsPrimaryKey()) continue; //不能拼主键
 				
 				Entry<String, Object> fieldValueEntry= jdbcMap.getFieldEntry(fieldDetail.getCode());
@@ -578,7 +578,7 @@ public abstract class TableServiceImpl implements TableService
 	 * 202103 生成一个全字段的更新SQL（必须定义了主键）（仅用于批量更新，而且是内部调用）
 	 * idfFieldDetail 是指定的主键
 	 */
-	String createFullUpdateSQL(FieldService idFieldDetail)
+	String createFullUpdateSQL(ColumnService idFieldDetail)
 	{
 		//
 		
@@ -586,9 +586,9 @@ public abstract class TableServiceImpl implements TableService
 		String sql= "update "+getName()+" set ";
 		List<Object> pArray= new ArrayList<>();
 		
-		for(int i=0;i<getFieldList().size();i++)
+		for(int i=0;i<getColumnList().size();i++)
 		{
-			FieldService field= getFieldList().get(i);
+			ColumnService field= getColumnList().get(i);
 			if(field.getIsPrimaryKey()) continue; //不能拼主键
 			
 			
@@ -653,7 +653,7 @@ public abstract class TableServiceImpl implements TableService
 	{
 		
 		TableService t= dataBase.getTable(name);
-		List<FieldService> fieldList= t.getFieldList();
+		List<ColumnService> fieldList= t.getColumnList();
 		
 		Entry<String, List<Object>> entry = insertByMapSQL(dataMap, fieldList, true);
 		
@@ -675,7 +675,7 @@ public abstract class TableServiceImpl implements TableService
 	
 	
 	
-	String insertByMapFullHeadSQLFor(List<FieldService> fieldList)
+	String insertByMapFullHeadSQLFor(List<ColumnService> fieldList)
 	{
 		
 		String keytext= "insert into "+name+ " (";
@@ -683,7 +683,7 @@ public abstract class TableServiceImpl implements TableService
 		
 		for(int i=0;i<fieldList.size();i++)
 		{
-			FieldService fieldVO= fieldList.get(i);	
+			ColumnService fieldVO= fieldList.get(i);	
 			
 			//拼接
 			keytext+= fieldVO.getCode()+",";
@@ -709,7 +709,7 @@ public abstract class TableServiceImpl implements TableService
 	 * 2021-05-04
 	 * @param showFieldList
 	 */
-	Entry<String, List<Object>> insertByMapSQL(Map<String, Object> dataMap, List<FieldService> fieldList, boolean showFieldList)
+	Entry<String, List<Object>> insertByMapSQL(Map<String, Object> dataMap, List<ColumnService> fieldList, boolean showFieldList)
 	{
 		
 		JdbcMap jdbcMap= new JdbcMap(dataMap);
@@ -726,7 +726,7 @@ public abstract class TableServiceImpl implements TableService
 		
 		for(int i=0;i<fieldList.size();i++)
 		{
-			FieldService fieldVO= fieldList.get(i);	
+			ColumnService fieldVO= fieldList.get(i);	
 			Object value= null;
 			
 			boolean hasFoundValue= false;
@@ -817,7 +817,7 @@ public abstract class TableServiceImpl implements TableService
 
 		
 		//1.获取表结构
-		List<FieldService> fieldList= getFieldList();
+		List<ColumnService> fieldList= getColumnList();
 		if(fieldList==null) //不支持表结构
 		{
 			//
@@ -877,7 +877,7 @@ public abstract class TableServiceImpl implements TableService
 			JdbcMap jdbcMap= new JdbcMap(rowMap);
 			
 			String part= "(";
-			for(FieldService fieldDetail:getFieldList())
+			for(ColumnService fieldDetail:getColumnList())
 			{
 				Entry<String, Object> valueEntry = jdbcMap.getFieldEntry(fieldDetail.getCode());
 				Object v= valueEntry.getValue();
@@ -947,7 +947,7 @@ ds
 			JdbcMap jdbcMap= new JdbcMap(rowMap);
 			
 			String part= "(";
-			for(FieldService fieldDetail:getFieldList())
+			for(ColumnService fieldDetail:getColumnList())
 			{
 				Entry<String, Object> valueEntry = jdbcMap.getFieldEntry(fieldDetail.getCode());
 				Object v= valueEntry.getValue();
@@ -1013,7 +1013,7 @@ ds
 			JdbcMap jdbcMap= new JdbcMap(rowMap);
 			
 			String part= "(";
-			for(FieldService fieldDetail:getFieldList())
+			for(ColumnService fieldDetail:getColumnList())
 			{
 				Entry<String, Object> valueEntry = jdbcMap.getFieldEntry(fieldDetail.getCode());
 				Object v= valueEntry.getValue();
@@ -1168,12 +1168,12 @@ ds
 	public boolean hasFieldsIn(TableService another) {
 		// TODO Auto-generated method stub
 		String text= new String();
-		List<FieldService> srcFieldList = getFieldList();
-		List<FieldService> toFieldList = another.getFieldList();
-		for(FieldService src: srcFieldList)
+		List<ColumnService> srcFieldList = getColumnList();
+		List<ColumnService> toFieldList = another.getColumnList();
+		for(ColumnService src: srcFieldList)
 		{
 			boolean found= false;
-			for(FieldService to: toFieldList)
+			for(ColumnService to: toFieldList)
 			{
 				if(src.getCode().equals(to.getCode()))
 				{
@@ -1236,7 +1236,7 @@ ds
 		StringBuilder sBuilder= new StringBuilder();
 		String row0= "{table} {table_comment}".replace("{table}", name).replace("{table_comment}", getComment());
 		sBuilder.append(row0);
-		for(FieldService field: getFieldList()) {
+		for(ColumnService field: getColumnList()) {
 			String rowN= "{field}:{field_comment}:{db_type}:{jdbc_type}"
 				.replace("{field}", field.getCode())	
 				.replace("{field_comment}", field.getComment())	
@@ -1274,7 +1274,7 @@ ds
 
 
 	@Override
-	public void createFieldFromDiffrentDB(FieldService src) {
+	public void createFieldFromDiffrentDB(ColumnService src) {
 		// TODO Auto-generated method stub
 		
 	}

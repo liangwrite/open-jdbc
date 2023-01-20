@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 import org.apache.commons.lang.StringUtils;
 
 import com.google.gson.Gson;
-import cn.fomer.jdbc.api.FieldService;
+import cn.fomer.jdbc.api.ColumnService;
 import cn.fomer.jdbc.entity.ColumnTypeEnum;
 import cn.fomer.jdbc.entity.DbTypeEnum;
 import cn.fomer.jdbc.service.MetaDataService;
@@ -138,10 +138,10 @@ public class MetaDataServiceImpl implements MetaDataService {
 	}
 
 	@Override
-	public List<FieldService> getAllField(String tableName) 
+	public List<ColumnService> getAllField(String tableName) 
 	{
 		// TODO Auto-generated method stub
-		List<FieldService> columnList= new ArrayList<FieldService>();
+		List<ColumnService> columnList= new ArrayList<ColumnService>();
 		
 		Connection connection = null;
 		try
@@ -164,7 +164,7 @@ public class MetaDataServiceImpl implements MetaDataService {
 			{
 				for(int i=0;i<rowList.size();i++)
 				{
-					FieldService fieldDetail= new FieldServiceImpl(null);
+					ColumnService fieldDetail= new ColumnServiceImpl(null);
 					columnList.add(fieldDetail);
 				
 					String type_name= String.valueOf(columnReader.get(i, "TYPE_NAME"));
@@ -188,7 +188,7 @@ public class MetaDataServiceImpl implements MetaDataService {
 			{
 				for(int i=0;i<rowList.size();i++)
 				{
-					FieldService fieldDetail= new FieldServiceImpl(null);
+					ColumnService fieldDetail= new ColumnServiceImpl(null);
 					columnList.add(fieldDetail);
 					
 					//0.

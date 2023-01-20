@@ -3,7 +3,7 @@ package cn.fomer.jdbc.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.fomer.jdbc.service.impl.FieldServiceImpl;
+import cn.fomer.jdbc.service.impl.ColumnServiceImpl;
 
 /**
  * @author Liang
@@ -13,7 +13,7 @@ import cn.fomer.jdbc.service.impl.FieldServiceImpl;
 public class TableVO {
 	String name;
 	
-	List<FieldServiceImpl> fields;
+	List<ColumnServiceImpl> fields;
 	List<String> columns;
 	List<Object> rows;
 	
@@ -22,7 +22,7 @@ public class TableVO {
 		this.name= name;
 	}
 	
-	public List<FieldServiceImpl> getFields()
+	public List<ColumnServiceImpl> getFields()
 	{
 		return null;
 	}

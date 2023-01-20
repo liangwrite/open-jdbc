@@ -21,7 +21,7 @@ public class DemoXD {
 		TableService table = dataBaseService.getTable("MM_STORAGE_STOCK_IN");
 		table.getTemplateService().mapEntity();
 
-		table.getFieldList().forEach(field->{
+		table.getColumnList().forEach(field->{
 			//System.out.println(field.getCode()+" -> "+ field.getJavaType());
 		});
 		

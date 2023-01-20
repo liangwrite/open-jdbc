@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.fomer.jdbc.api.DataBaseService;
-import cn.fomer.jdbc.api.FieldService;
+import cn.fomer.jdbc.api.ColumnService;
 import cn.fomer.jdbc.api.KingbaseTable;
 import cn.fomer.jdbc.service.MetaDataService;
 
@@ -23,11 +23,11 @@ public class KingbaseTableImpl extends TableServiceImpl implements KingbaseTable
 	}
 
 	@Override
-	public List<FieldService> getFieldList() {
+	public List<ColumnService> getColumnList() {
 		// TODO Auto-generated method stub
 		String sql= super.getDataBase().getDialect().getFields(super.getDataBase().getDbName() ,this.getName());
 		
-		List<FieldService> fieldList= new ArrayList<FieldService>();
+		List<ColumnService> fieldList= new ArrayList<ColumnService>();
 		if(sql==null) //不支持时 
 		{
 			MetaDataService metaDataService= new MetaDataServiceImpl(super.getDataBase().getDataSource());
@@ -41,7 +41,7 @@ public class KingbaseTableImpl extends TableServiceImpl implements KingbaseTable
 		List<Map<String, Object>> mapList = resutl.mapList();
 		int len= mapList.size();
 		for(int i=0;i<len;i++) {
-			FieldService fieldDetail= new FieldServiceImpl(this);
+			ColumnService fieldDetail= new ColumnServiceImpl(this);
 			fieldList.add(fieldDetail);
 			
 			

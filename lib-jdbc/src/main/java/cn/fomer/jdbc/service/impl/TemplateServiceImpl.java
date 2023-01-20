@@ -9,7 +9,7 @@ import cn.fomer.common.java.DateHelper;
 import cn.fomer.common.service.Xml;
 import cn.fomer.common.service.impl.XmlImpl;
 import cn.fomer.common.util.StringHelper;
-import cn.fomer.jdbc.api.FieldService;
+import cn.fomer.jdbc.api.ColumnService;
 import cn.fomer.jdbc.api.TableService;
 import cn.fomer.jdbc.api.TemplateService;
 import cn.fomer.jdbc.entity.ColumnTypeEnum;
@@ -44,7 +44,7 @@ public class TemplateServiceImpl implements TemplateService {
 		//System.out.println(getJavaName());
 		
 		
-		List<FieldService> fieldList = table.getFieldList();
+		List<ColumnService> fieldList = table.getColumnList();
 		
 		
 		Xml xml= new XmlImpl(getClass(), "XD.xml");
@@ -114,8 +114,8 @@ public class TemplateServiceImpl implements TemplateService {
 	@Override
 	public void mapMapper() {
 		// TODO Auto-generated method stub
-		List<FieldService> fieldList = table.getFieldList();
-		for(FieldService fieldDetail: fieldList) {
+		List<ColumnService> fieldList = table.getColumnList();
+		for(ColumnService fieldDetail: fieldList) {
 			String text= "<result property=\"{field}\" column=\"{column}\"/>";
 			
 			System.out.println(

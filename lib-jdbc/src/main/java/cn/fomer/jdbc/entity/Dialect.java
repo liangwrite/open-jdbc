@@ -25,7 +25,7 @@ public class Dialect
 	Xml mysqlXml= new XmlImpl("dialect/mysql.xml");
 	Xml oracleXml= new XmlImpl("dialect/oracle.xml");
 	Xml kingbaseXml= new XmlImpl("dialect/kingbase.xml");
-	Xml postgresXml= new XmlImpl("dialect/postgres.xml");
+	Xml pgsqlXml= new XmlImpl("dialect/pgsql.xml");
 	
 	DbTypeEnum dbType;
 	
@@ -313,12 +313,25 @@ Map<DbTypeEnum, String> mapQueryFieldOfTable= new HashMap<DbTypeEnum, String>();
 	
 	/**
 	 * 2022-03
+	 * @xml select-column-comment
 	 */
-	public String getFieldComment(String dbName, String table)
+	public String getColumnComment(String dbName, String table)
 	{
-		String sql= getDialectXml().getById("field_comment").getNode().getTextContent();
+		String sql= getDialectXml().getById("select-column-comment").getNode().getTextContent();
 		return sql
 				.replace("DB_NAME", dbName)
+				.replace("TABLE_NAME", table);
+	}	
+	
+	/**
+	 * 2022-12
+	 * @xml select-column-comment
+	 */
+	public String getColumnCommentForPgSQL(String schemaName, String table)
+	{
+		String sql= getDialectXml().getById("select-column-comment").getNode().getTextContent();
+		return sql
+				.replace("SCHEMA_NAME", schemaName)
 				.replace("TABLE_NAME", table);
 	}	
 	
@@ -346,6 +359,18 @@ Map<DbTypeEnum, String> mapQueryFieldOfTable= new HashMap<DbTypeEnum, String>();
 		sql= sql.replace("TABLE_NAME", tableName);
 		sql= sql.replace("DB_NAME", dbName);
 		return sql;
+	}
+	
+	public String getFieldsForPgSQL(String schemaName, String tableName)
+	{ 
+		String key= "field_list";
+		String sql= getDialectXml().getById(key).getNode().getTextContent();
+		
+		if(sql==null) return null;
+		
+		sql= sql.replace("SCHEMA_NAME", schemaName);
+		sql= sql.replace("TABLE_NAME", tableName);
+		return sql;
 	}	
 	
 	
@@ -362,7 +387,7 @@ Map<DbTypeEnum, String> mapQueryFieldOfTable= new HashMap<DbTypeEnum, String>();
 			case Kingbase:
 				return kingbaseXml;
 			case PostgreSQL:
-				return postgresXml;
+				return pgsqlXml;
 		}
 		
 		throw NotSupportError.throwError("不支持的数据库类型！"+dbType);

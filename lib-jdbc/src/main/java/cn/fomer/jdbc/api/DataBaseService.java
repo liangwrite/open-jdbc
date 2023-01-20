@@ -32,7 +32,7 @@ public abstract class DataBaseService extends CrudServiceImpl {
 	protected Dialect dialect;
 	
 	//表结构缓存
-	protected Map<String, List<FieldService>> tableFieldCache= new ConcurrentHashMap<>();
+	protected Map<String, List<ColumnService>> tableFieldCache= new ConcurrentHashMap<>();
 	
 	public DataBaseService(DataSourceSimple ds, boolean readonly)
 	{

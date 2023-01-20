@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import cn.fomer.jdbc.api.DataBaseService;
-import cn.fomer.jdbc.api.FieldService;
+import cn.fomer.jdbc.api.ColumnService;
 import cn.fomer.jdbc.api.HugeQueryService;
 import cn.fomer.jdbc.api.TableService;
 import cn.fomer.jdbc.clone.service.impl.SQLFactory;

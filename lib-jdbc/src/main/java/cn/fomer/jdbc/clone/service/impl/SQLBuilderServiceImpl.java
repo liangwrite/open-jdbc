@@ -10,7 +10,7 @@ import org.apache.commons.lang.StringUtils;
 
 import cn.fomer.common.entity.ResultVO;
 import cn.fomer.jdbc.api.DataBaseService;
-import cn.fomer.jdbc.api.FieldService;
+import cn.fomer.jdbc.api.ColumnService;
 import cn.fomer.jdbc.api.TableService;
 import cn.fomer.jdbc.clone.service.ISQLBuilderService;
 import cn.fomer.jdbc.entity.ColumnTypeEnum;
@@ -33,11 +33,11 @@ public class SQLBuilderServiceImpl implements ISQLBuilderService
 		final String SQL="create table TABLE_NAME(id int)";
 		
 	
-		List<FieldService> srcList = table.getFieldList();
+		List<ColumnService> srcList = table.getColumnList();
 		String contentPart= "";
 		for(int i=0;i<srcList.size();i++)
 		{
-			FieldService fieldVO= srcList.get(i);
+			ColumnService fieldVO= srcList.get(i);
 			String create_field_string= this.createFieldSQL(fieldVO);
 			if(StringUtils.isEmpty(create_field_string))
 			{
@@ -62,7 +62,7 @@ public class SQLBuilderServiceImpl implements ISQLBuilderService
 	public Set<ColumnTypeEnum> unsupportCollection= new HashSet<ColumnTypeEnum>();
 	
 	@Override
-	public String createFieldSQL(FieldService fieldVO)
+	public String createFieldSQL(ColumnService fieldVO)
 	{
 
 		String text= "";
@@ -145,7 +145,7 @@ public class SQLBuilderServiceImpl implements ISQLBuilderService
 		return null;
 	}
 	
-	void log(String table,FieldService fieldVO,String message)
+	void log(String table,ColumnService fieldVO,String message)
 	{
 		String sample= "TABLE.FIELD int 失败原因！";
 		String text= sample

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.fomer.jdbc.api.DataBaseService;
-import cn.fomer.jdbc.api.FieldService;
+import cn.fomer.jdbc.api.ColumnService;
 import cn.fomer.jdbc.api.MySQLTable;
 import cn.fomer.jdbc.api.TableService;
 import cn.fomer.jdbc.entity.ColumnTypeEnum;
@@ -33,11 +33,11 @@ public class MySQLTableImpl extends TableServiceImpl implements MySQLTable {
 
 
 	@Override
-	public List<FieldService> getFieldList() {
+	public List<ColumnService> getColumnList() {
 		// TODO Auto-generated method stub
 		String sql= this.getDataBase().getDialect().getFields(this.getDataBase().getDbName(), this.getName());
 		//String id= getIdField();
-		List<FieldService> fieldList= new ArrayList<FieldService>();
+		List<ColumnService> fieldList= new ArrayList<ColumnService>();
 		if(sql==null) //不支持时 
 		{
 			MetaDataService metaDataService= new MetaDataServiceImpl(this.getDataBase().getDataSource());
@@ -51,7 +51,7 @@ public class MySQLTableImpl extends TableServiceImpl implements MySQLTable {
 		List<Map<String, Object>> mapList = resutl.mapList();
 		int len= mapList.size();
 		for(int i=0;i<len;i++) {
-			FieldService fieldDetail= new FieldServiceImpl(this);
+			ColumnService fieldDetail= new ColumnServiceImpl(this);
 			fieldList.add(fieldDetail);
 			
 			

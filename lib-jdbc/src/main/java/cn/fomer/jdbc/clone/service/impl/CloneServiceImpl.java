@@ -6,7 +6,7 @@ import java.util.Map;
 import cn.fomer.common.entity.ResultVO;
 import cn.fomer.jdbc.api.CloneService;
 import cn.fomer.jdbc.api.DataBaseService;
-import cn.fomer.jdbc.api.FieldService;
+import cn.fomer.jdbc.api.ColumnService;
 import cn.fomer.jdbc.api.TableService;
 import cn.fomer.jdbc.clone.service.ISQLBuilderService;
 import cn.fomer.jdbc.entity.DbTypeEnum;
@@ -80,8 +80,8 @@ public class CloneServiceImpl implements CloneService
 		
 		//3 字段注释
 		System.out.println(String.format("正在添加字段注释...", ""));
-		List<FieldService> srcFieldList = srcTable.getFieldList();
-		for(FieldService srcField: srcFieldList) {
+		List<ColumnService> srcFieldList = srcTable.getColumnList();
+		for(ColumnService srcField: srcFieldList) {
 			toTable.getField(srcField.getCode()).updateComment(srcField.getComment());
 		}
 		

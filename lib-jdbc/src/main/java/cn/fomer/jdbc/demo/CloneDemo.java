@@ -6,7 +6,7 @@ import java.util.List;
 import com.google.gson.Gson;
 import cn.fomer.jdbc.api.CloneService;
 import cn.fomer.jdbc.api.DataBaseService;
-import cn.fomer.jdbc.api.FieldService;
+import cn.fomer.jdbc.api.ColumnService;
 import cn.fomer.jdbc.api.TableService;
 import cn.fomer.jdbc.clone.service.impl.CloneServiceImpl;
 import cn.fomer.jdbc.datasource.DataSourceSimpleImpl;
@@ -34,7 +34,7 @@ public class CloneDemo {
 		//toTable.compareFieldWith(srcTable);
 		if(true) return;
 		
-		List<FieldService> fieldList = toDB.getTable("md_books").getFieldList();
+		List<ColumnService> fieldList = toDB.getTable("md_books").getColumnList();
 		System.out.println(new Gson().toJson(fieldList));
 		
 		
